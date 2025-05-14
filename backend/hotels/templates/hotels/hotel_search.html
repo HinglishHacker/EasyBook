@@ -1,0 +1,83 @@
+{% load static %}
+{% load form_tags %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> EasyBook - Hotel qidirish</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body class="bg-gradient-to-br from-indigo-600 to-blue-400 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-200 min-h-screen flex flex-col items-center justify-center transition-custom">
+
+   <!-- Theme Toggle Button -->
+<!-- Theme Toggle Button -->
+<div class="fixed top-6 right-6 z-50">
+    <button id="theme-toggle" class="p-3 bg-gray-100 dark:bg-gray-800 rounded-full shadow-xl transition duration-300 text-xl">
+        <!-- Emoji Icons -->
+        <span id="theme-toggle-dark-icon" class="hidden">☽</span> <!-- Moon -->
+        <span id="theme-toggle-light-icon" class="hidden">☼</span> <!-- Sun -->
+    </button>
+</div>
+
+    <div class="max-w-3xl w-full px-4 py-8">
+        <h1 class="text-4xl font-bold text-center mb-10 drop-shadow-lg">
+            EasyBook bilan ideal mehmonxonani toping
+        </h1>
+
+        <form method="get" action="{% url 'hotel_search' %}" class="bg-white dark:bg-gray-800 bg-opacity-70 dark:bg-opacity-60 rounded-3xl shadow-xl p-8 backdrop-blur-lg transition-custom space-y-6">
+
+            <!-- Destination -->
+            <div>
+                <label class="font-semibold">Shahar yoki mehmonxona</label>
+                {{ form.destination|add_class:"mt-2 w-full px-4 py-3 rounded-xl border dark:border-gray-700 bg-gray-50 dark:bg-gray-700 shadow-sm focus:outline-none transition-custom" }}
+            </div>
+
+            <!-- Dates -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="font-semibold">Kelish sanasi</label>
+                    {{ form.checkin|add_class:"mt-2 w-full px-4 py-3 rounded-xl border dark:border-gray-700 bg-gray-50 dark:bg-gray-700 shadow-sm transition-custom" }}
+                </div>
+                <div>
+                    <label class="font-semibold">Ketish sanasi</label>
+                    {{ form.checkout|add_class:"mt-2 w-full px-4 py-3 rounded-xl border dark:border-gray-700 bg-gray-50 dark:bg-gray-700 shadow-sm transition-custom" }}
+                </div>
+            </div>
+
+            <!-- Guests -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="font-semibold">Kattalar</label>
+                    <div class="flex items-center space-x-2 mt-2">
+                        <button type="button" onclick="adjust('adults', -1)" class="px-3 py-2 bg-indigo-500 text-white rounded-lg shadow transition-custom">−</button>
+                        {{ form.adults|add_class:"w-16 text-center rounded-xl border dark:border-gray-700 bg-gray-50 dark:bg-gray-700 shadow-sm transition-custom" }}
+                        <button type="button" onclick="adjust('adults', 1)" class="px-3 py-2 bg-indigo-500 text-white rounded-lg shadow transition-custom">+</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="font-semibold">Bolalar</label>
+                    <div class="flex items-center space-x-2 mt-2">
+                        <button type="button" onclick="adjust('children', -1)" class="px-3 py-2 bg-indigo-500 text-white rounded-lg shadow transition-custom">−</button>
+                        {{ form.children|add_class:"w-16 text-center rounded-xl border dark:border-gray-700 bg-gray-50 dark:bg-gray-700 shadow-sm transition-custom" }}
+                        <button type="button" onclick="adjust('children', 1)" class="px-3 py-2 bg-indigo-500 text-white rounded-lg shadow transition-custom">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" class="mt-4 px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-semibold rounded-full shadow-xl transition-custom transform hover:scale-105">
+                     Mehmonxona izlash
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <script src="{% static 'js/scripts.js' %}"></script>
+
+</body>
+</html>
