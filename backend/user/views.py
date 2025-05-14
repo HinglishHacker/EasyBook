@@ -1,43 +1,38 @@
-from rest_framework import viewsets
-from .models import Passenger
-from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_http_methods
-from django.urls import reverse
-from .forms import RegisterForm
+from django.shortcuts import render, redirect, resolve_url
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout as auth_logout
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.cache import never_cache
+from django.views.generic import TemplateView
+from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.sites.shortcuts import get_current_site
+from django.conf import settings
+from django.http import HttpResponseRedirect, QueryDict
+from urllib.parse import urlsplit, urlunsplit
 
-# class PassengerViewSet(viewsets.ModelViewSet):
-#     queryset = Passenger.objects.all()
-#     serializer_class = PassengerSerializer
+from .models import Passenger
+from .forms import RegisterForm, LoginForm
 
+# === Views ===
 
 def register_view(request):
     if request.method == 'POST':
-        form = RegisterForm(request.POST)
+        form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
             login(request, user)
+            messages.success(request, 'Вы успешно зарегистрированы!')
+            s.success(request, "Вы успешно зарегистрированы!")
             return redirect('base')
     else:
         form = RegisterForm()
     return render(request, 'user/register.html', {'form': form})
 
-# Выход из аккаунта
-@login_required
-@require_http_methods(["GET", "POST"])
-def custom_logout(request):
-    logout(request)
-    return redirect('base')
-
-def home_view(request):
-    return render(request, 'base.html')
-
 def login_view(request):
     if request.method == 'POST':
-        form = Passenger(request.POST)
+        form = LoginForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
@@ -46,7 +41,64 @@ def login_view(request):
                 login(request, user)
                 return redirect('base')
             else:
-                messages.error(request, 'Неверный email или пароль.')
+                messages.success(request, 'Вы успешно зарегистрированы!')
+            s.error(request, 'Неверный email или пароль.')
     else:
-        form = Passenger()
-    return render(request, 'login.html', {'form': form})
+        form = LoginForm()
+    return render(request, 'user/login.html', {'form': form})
+
+def home_view(request):
+    print(">> Пользователь:", request.user.email if request.user.is_authenticated else "Аноним")
+    return render(request, 'base.html')
+
+# === Logout system ===
+
+class LogoutView(TemplateView):
+    http_method_names = ["post", "options"]
+    template_name = "logged_out.html"
+    extra_context = None
+    next_page = None
+
+    @method_decorator(csrf_protect)
+    @method_decorator(never_cache)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        auth_logout(request)
+        redirect_to = self.get_success_url()
+        if redirect_to != request.get_full_path():
+            return HttpResponseRedirect(redirect_to)
+        return super().get(request, *args, **kwargs)
+
+    def get_success_url(self):
+        if self.next_page:
+            return resolve_url(self.next_page)
+        elif settings.LOGOUT_REDIRECT_URL:
+            return resolve_url(settings.LOGOUT_REDIRECT_URL)
+        else:
+            return self.request.path
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        current_site = get_current_site(self.request)
+        context.update({
+            "site": current_site,
+            "site_name": current_site.name,
+            "title": _("Вы вышли из аккаунта"),
+            **(self.extra_context or {}),
+        })
+        return context
+
+def logout_then_login(request, login_url=None):
+    login_url = resolve_url(login_url or settings.LOGIN_URL)
+    return LogoutView.as_view(next_page=login_url)(request)
+
+def redirect_to_login(next, login_url=None, redirect_field_name=REDIRECT_FIELD_NAME):
+    resolved_url = resolve_url(login_url or settings.LOGIN_URL)
+    login_url_parts = list(urlsplit(resolved_url))
+    if redirect_field_name:
+        querystring = QueryDict(login_url_parts[3], mutable=True)
+        querystring[redirect_field_name] = next
+        login_url_parts[3] = querystring.urlencode(safe="/")
+    return HttpResponseRedirect(urlunsplit(login_url_parts))

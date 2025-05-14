@@ -23,7 +23,7 @@ class Passenger(AbstractBaseUser, PermissionsMixin):
     passport_number = models.CharField(max_length=50)
     phone = models.CharField(max_length=20)
     flight_date = models.DateTimeField(null=True, blank=True)
-
+    avatar = models.ImageField(upload_to='avatars/', default='avatars/default.png', blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
