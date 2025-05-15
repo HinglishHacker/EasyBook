@@ -49,10 +49,18 @@
         <div class="dropdown ms-3">
             <a class="dropdown-toggle text-white d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
                 {% if user.avatar %}
-                    <img src="{{ user.avatar.url }}" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
-                {% else %}
-                    <span class="avatar">{{ user.first_name|slice:":1"|upper }}</span>
-                {% endif %}
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                class="rounded-circle bg-light p-1" style="object-fit: cover;">
+               <circle cx="12" cy="7" r="4" stroke="#6c757d" stroke-width="2"/>
+               <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="#6c757d" stroke-width="2" fill="none"/>
+           </svg>
+{% else %}
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+         class="rounded-circle bg-light p-1" style="object-fit: cover;">
+        <circle cx="12" cy="7" r="4" stroke="#6c757d" stroke-width="2"/>
+        <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="#6c757d" stroke-width="2" fill="none"/>
+    </svg>
+{% endif %}
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
                 <li><a class="dropdown-item" href="#">Профиль</a></li>

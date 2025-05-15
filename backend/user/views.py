@@ -11,8 +11,6 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.conf import settings
 from django.http import HttpResponseRedirect, QueryDict
 from urllib.parse import urlsplit, urlunsplit
-
-from .models import Passenger
 from .forms import RegisterForm, LoginForm
 
 # === Views ===
@@ -24,7 +22,6 @@ def register_view(request):
             user = form.save()
             login(request, user)
             messages.success(request, 'Вы успешно зарегистрированы!')
-            s.success(request, "Вы успешно зарегистрированы!")
             return redirect('base')
     else:
         form = RegisterForm()
@@ -33,19 +30,23 @@ def register_view(request):
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
+        print("keldi")
         if form.is_valid():
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            user = authenticate(request, email=email, password=password)
+            print('isvalid')
+            cd = form.cleaned_data
+            credentials = {'email': cd['email'], 'password': cd['password']}
+            user = authenticate(request, **credentials)
             if user is not None:
                 login(request, user)
+                messages.success(request, f"Добро пожаловать, {user.first_name}!")
                 return redirect('base')
             else:
-                messages.success(request, 'Вы успешно зарегистрированы!')
-            s.error(request, 'Неверный email или пароль.')
+                messages.error(request, 'Неверный email или пароль.')
     else:
         form = LoginForm()
     return render(request, 'user/login.html', {'form': form})
+
+
 
 def home_view(request):
     print(">> Пользователь:", request.user.email if request.user.is_authenticated else "Аноним")
