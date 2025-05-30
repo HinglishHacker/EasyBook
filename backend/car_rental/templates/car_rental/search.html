@@ -158,6 +158,21 @@
       height: 100%;
       z-index: -2;
     }
+    .fade-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #000;
+      opacity: 0;
+      z-index: 9999;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+  
+    .fade-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
   </style>
 </head>
 <body>
@@ -214,6 +229,8 @@
     </form>
   </div>
 
+  <div class="fade-overlay" id="fade-overlay"></div>
+
   <script>
     const slides = document.querySelectorAll('.background-slideshow .slide');
     if (slides.length > 0) {
@@ -251,6 +268,26 @@
         }
       });
     }
+<<<<<<< HEAD
+=======
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', function (e) {
+        e.preventDefault(); // Предотвращаем немедленный переход
+        const href = this.href;
+  
+        const overlay = document.getElementById('fade-overlay');
+        overlay.classList.add('active');
+  
+        setTimeout(() => {
+          window.location.href = href;
+        }, 500); // Время должно совпадать с CSS transition
+      });
+    });
+      window.addEventListener('DOMContentLoaded', () => {
+        const overlay = document.getElementById('fade-overlay');
+        overlay.classList.remove('active');
+      });
+>>>>>>> aecbd7a938d579730d7d8bf69d5aace700122a7f
   </script>
 </body>
 </html>

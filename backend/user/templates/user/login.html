@@ -27,6 +27,15 @@
       max-width: 400px;
     }
 
+{% block content %}
+<div style="max-width: 400px; margin: auto; padding: 30px;">
+    <h2 style="text-align: center;">Вход в аккаунт</h2>
+    <form method="post" style="display: flex; flex-direction: column; gap: 15px;">
+        {% csrf_token %}
+        <label for="id_username">Email:</label>
+        <input type="text" name="email" id="id_username" required>
+
+
     .glass-card h2 {
       text-align: center;
       margin-bottom: 20px;
@@ -86,7 +95,22 @@
 
       <button type="submit" class="btn-primary">Войти</button>
     </form>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> aecbd7a938d579730d7d8bf69d5aace700122a7f
     <p>Нет аккаунта? <a href="{% url 'user:register' %}">Зарегистрироваться</a></p>
   </div>
 </body>
 </html>
+<<<<<<< HEAD
+=======
+=======
+    <p style="text-align: center; margin-top: 10px;">
+        Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a>
+    </p>
+</div>
+{% endblock %}
+                     
+>>>>>>> 317d9cb9eead09ebdceafcfddbee760a25846ecb
+>>>>>>> aecbd7a938d579730d7d8bf69d5aace700122a7f

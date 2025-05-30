@@ -46,16 +46,23 @@ INSTALLED_APPS = [
     'favourite',
     'car_rental',
     'main',
+
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',  # <-- для локализации
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',   
+]
+
+AUTHENTICATION_BACKENDS = [   
+    'django.contrib.auth.backends.ModelBackend',
+    'user.auth_backend.EmailAuthBackend', 
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -130,9 +137,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tashkent'
 
 USE_I18N = True
 
@@ -148,18 +155,18 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # Для продакшна (например, на сервере или при сборке проекта)
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'user.Passenger'
 
 LOGIN_REDIRECT_URL = 'home'       # после логина
 LOGOUT_REDIRECT_URL = 'home'      # после выхода
+
 USERNAME_FIELD = 'email'
 
 REST_FRAMEWORK = {
@@ -174,5 +181,5 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
-AUTH_USER_MODEL = 'user.Passenger'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
