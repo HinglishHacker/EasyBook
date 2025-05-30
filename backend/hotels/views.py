@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from django.shortcuts import render, redirect
 from .forms import HotelSearchForm
 
@@ -24,3 +25,8 @@ def hotel_search(request):
         return redirect(booking_url)
 
     return render(request, 'hotels/hotel_search.html', {'form': form})
+=======
+from django.shortcuts import render
+
+# Create your views here.
+>>>>>>> 317d9cb9eead09ebdceafcfddbee760a25846ecb

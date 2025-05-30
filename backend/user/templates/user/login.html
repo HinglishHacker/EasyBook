@@ -16,6 +16,7 @@
       align-items: center;
     }
 
+<<<<<<< HEAD
     .glass-card {
       background: rgba(255, 255, 255, 0.07);
       border-radius: 16px;
@@ -26,6 +27,15 @@
       width: 100%;
       max-width: 400px;
     }
+=======
+{% block content %}
+<div style="max-width: 400px; margin: auto; padding: 30px;">
+    <h2 style="text-align: center;">Вход в аккаунт</h2>
+    <form method="post" style="display: flex; flex-direction: column; gap: 15px;">
+        {% csrf_token %}
+        <label for="id_username">Email:</label>
+        <input type="text" name="email" id="id_username" required>
+>>>>>>> 317d9cb9eead09ebdceafcfddbee760a25846ecb
 
     .glass-card h2 {
       text-align: center;
@@ -86,7 +96,16 @@
 
       <button type="submit" class="btn-primary">Войти</button>
     </form>
+<<<<<<< HEAD
     <p>Нет аккаунта? <a href="{% url 'user:register' %}">Зарегистрироваться</a></p>
   </div>
 </body>
 </html>
+=======
+    <p style="text-align: center; margin-top: 10px;">
+        Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a>
+    </p>
+</div>
+{% endblock %}
+                     
+>>>>>>> 317d9cb9eead09ebdceafcfddbee760a25846ecb

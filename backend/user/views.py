@@ -11,8 +11,6 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.conf import settings
 from django.http import HttpResponseRedirect, QueryDict
 from urllib.parse import urlsplit, urlunsplit
-
-from .models import Passenger
 from .forms import RegisterForm, LoginForm
 
 
@@ -20,9 +18,16 @@ def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
+<<<<<<< HEAD
             form.save()
             messages.success(request, "Вы успешно зарегистрированы!")
             return redirect('user:login')
+=======
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'Вы успешно зарегистрированы!')
+            return redirect('base')
+>>>>>>> 317d9cb9eead09ebdceafcfddbee760a25846ecb
     else:
         form = RegisterForm()
     return render(request, 'user/register.html', {'form': form})
@@ -31,18 +36,27 @@ def register_view(request):
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
+        print("keldi")
         if form.is_valid():
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            user = authenticate(request, email=email, password=password)
+            print('isvalid')
+            cd = form.cleaned_data
+            credentials = {'email': cd['email'], 'password': cd['password']}
+            user = authenticate(request, **credentials)
             if user is not None:
                 login(request, user)
+<<<<<<< HEAD
                 return redirect('home')  # <== Убедись, что здесь именно 'home'
+=======
+                messages.success(request, f"Добро пожаловать, {user.first_name}!")
+                return redirect('base')
+>>>>>>> 317d9cb9eead09ebdceafcfddbee760a25846ecb
             else:
                 messages.error(request, 'Неверный email или пароль.')
     else:
         form = LoginForm()
     return render(request, 'user/login.html', {'form': form})
+
+
 
 def home_view(request):
     print(">> Пользователь:", request.user.email if request.user.is_authenticated else "Аноним")
