@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Favourite Flights</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-blue-300 to-blue-500 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 transition-all duration-500">
+
+<!-- Dark Mode Toggle -->
+<div class="fixed top-6 right-6">
+    <button id="theme-toggle" class="p-3 rounded-full bg-black dark:bg-white text-white dark:text-black shadow-lg">
+        <span id="theme-icon">🌙</span>
+    </button>
+</div>
+
+<div class="w-full max-w-4xl mx-auto bg-[#3b3f56] dark:bg-gray-800 text-white p-8 rounded-2xl shadow-2xl">
+    <h1 class="text-3xl font-bold text-center mb-8">Saved Flights</h1>
+
+    {% if favourites %}
+      <ul class="space-y-4">
+        {% for fav in favourites %}
+          <li class="flex justify-between items-center bg-gray-900 dark:bg-gray-700 p-4 rounded-xl shadow">
+            <div>
+              <p class="text-lg font-semibold">Flight #{{ fav.ticket.id }} — {{ fav.ticket.departure }} → {{ fav.ticket.destination }}</p>
+              <p class="text-sm text-gray-400">Departure: {{ fav.ticket.departure_time|date:"d.m.Y H:i" }}</p>
+              <p class="text-sm text-gray-400">Arrival: {{ fav.ticket.arrival_time|date:"d.m.Y H:i" }}</p>
+              <p class="text-sm text-gray-400">Price: {{ fav.ticket.price }} $</p>
+            </div>
+            <a href="{% url 'favourites:remove_from_favourites' fav.ticket.id %}" class="text-red-400 hover:text-red-600 font-semibold">Remove</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-center text-gray-300">You have no saved flights yet.</p>
+    {% endif %}
+</div>
+
+<script>
+    const toggleBtn = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    toggleBtn.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+        themeIcon.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,370 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flight Booking</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      height: 100vh;
+      color: #fff;
+      position: relative;
+    }
+
+    .nav-links a:hover {
+      background-color: #1e60f5;
+      box-shadow: 0 4px 20px rgba(30, 96, 245, 0.5);
+      transform: scale(1.05);
+    }
+
+    .header {
+      text-align: left;
+      padding: 100px 60px 40px;
+      z-index: 2;
+      position: relative;
+    }
+
+    .header h1 {
+      font-size: 52px;
+      margin: 0;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .header p {
+      font-size: 20px;
+      color: #e0e0e0;
+      margin-top: 10px;
+    }
+
+    .form-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 30px;
+      margin: 0 auto;
+      width: 85%;
+      max-width: 960px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: flex-end;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 150px;
+    }
+
+    label {
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    input, select {
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(5px);
+      box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .search-btn {
+      padding: 14px 22px;
+      background-color: #1e60f5;
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 17px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 15px rgba(30, 96, 245, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .search-btn::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300%;
+      height: 300%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: translate(-50%, -50%) scale(0);
+      border-radius: 50%;
+      transition: transform 0.5s ease;
+      z-index: 0;
+    }
+
+    .search-btn:hover::before {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .search-btn:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 8px 24px rgba(30, 96, 245, 0.6);
+    }
+
+    .search-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 3px 10px rgba(30, 96, 245, 0.3);
+    }
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background-color: rgba(0, 0, 0, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 60px;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: 700;
+      color: #ffffff;
+      transition: text-shadow 0.3s ease;
+    }
+
+    .shine-text {
+      display: inline-block;
+      font-weight: 700;
+      font-size: 26px;
+      background: linear-gradient(90deg, #fff 20%, #1e60f5 50%, #fff 80%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: background-position 0.2s ease;
+    }
+
+    .nav-links a {
+      margin-left: 30px;
+      padding: 10px 18px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-links a:hover {
+      background-color: #1e60f5;
+      box-shadow: 0 4px 20px rgba(30, 96, 245, 0.5);
+      transform: scale(1.05);
+    }
+
+    .background-slideshow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    
+    .background-slideshow .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1.2s ease-in-out;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+    
+    .background-slideshow .slide.active {
+      opacity: 1;
+    }
+
+    .overlay {
+      background: rgba(0, 0, 0, 0.5);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+    }   
+    .fade-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #000;
+      opacity: 0;
+      z-index: 9999;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+  
+    .fade-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+
+  <div class="navbar">
+    <div class="logo" id="logo">
+      <span class="shine-text">BOOK YOUR TRIP</span>
+    </div>
+    <div class="nav-links">
+      <a href="{% url 'main:about' %}">About us</a>
+      <a href="{% url 'hotels:hotel_search'%}">Hotels</a>
+      <a href="{% url 'car_rental:search' %}">Car rental</a>
+      <a href="{% url 'booking:booking_history'%}">My tickets</a>
+      {% if not request.user.is_authenticated %}
+      <a href="{% url 'user:login' %}">Sign in</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="background-slideshow">
+      <img src="{% static 'slides/fly/f2.jpg' %}" class="slide active">
+      <img src="{% static 'slides/fly/f3.png' %}" class="slide">
+      <img src="{% static 'slides/fly/f4.png' %}" class="slide">
+  </div>
+
+  {% block content %}
+  <div class="header">
+    <h1>Find and book<br>a flight</h1>
+    <p>Search for flights to the<br>most popular destinations</p>
+  </div>
+
+  <form class="form-card" method="get" action="{% url 'booking:flight_list' %}">
+    <div class="form-group">
+      <label>From</label>
+      <input type="text" name="departure_city" placeholder="City or airport">
+    </div>
+    <div class="form-group">
+      <label>To</label>
+      <input type="text" name="arrival_city" placeholder="City or airport">
+    </div>
+    <div class="form-group">
+      <label>Departure</label>
+      <input type="date" name="departure_date">
+    </div>
+    <div class="form-group">
+      <label>Passengers</label>
+      <input type="number" name="passengers" placeholder="Enter number" min="1" max="30" value="1">
+    </div>
+    <div class="form-group">
+      <label>Cabin Class</label>
+      <select name="cabin_class">
+        <option value="ECONOMY">Economy</option>
+        <option value="BUSINESS">Business</option>
+        <option value="FIRST">First</option>
+      </select>
+    </div>
+    <button class="search-btn" type="submit">Search</button>
+  </form>
+  <div class="fade-overlay" id="fade-overlay"></div>
+  {% endblock %}
+
+  <script>
+    // GSAP — анимация логотипа
+    const shine = document.querySelector(".shine-text");
+  
+    if (shine) {
+      gsap.from("#logo", {
+        x: -200,
+        opacity: 0,
+        duration: 1.2,
+        ease: "power3.out",
+        onComplete: () => {
+          gsap.to(shine, {
+            backgroundPosition: "200% center",
+            duration: 1.2,
+            ease: "power2.inOut",
+            onComplete: () => {
+              document.addEventListener("mousemove", (e) => {
+                const rect = shine.getBoundingClientRect();
+                const offsetX = e.clientX - rect.left;
+                const percent = offsetX / rect.width;
+                shine.style.backgroundPosition = `${percent * 200}% center`;
+              });
+            }
+          });
+        }
+      });
+    }
+  
+    // Слайд-шоу фоновых изображений
+    const slides = document.querySelectorAll(".background-slideshow .slide");
+    if (slides.length > 0) {
+      let current = 0;
+      setInterval(() => {
+        slides[current].classList.remove("active");
+        current = (current + 1) % slides.length;
+        slides[current].classList.add("active");
+      }, 5000);
+    }
+  
+    // Анимация заголовка и подзаголовка
+    gsap.from(".header h1", {
+      y: 50,
+      opacity: 0,
+      duration: 1.2,
+      ease: "power3.out",
+      delay: 0.5
+    });
+  
+    gsap.from(".header p", {
+      y: 30,
+      opacity: 0,
+      duration: 1.2,
+      ease: "power3.out",
+      delay: 0.8
+    });
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', function (e) {
+        e.preventDefault(); // Предотвращаем немедленный переход
+        const href = this.href;
+  
+        const overlay = document.getElementById('fade-overlay');
+        overlay.classList.add('active');
+  
+        setTimeout(() => {
+          window.location.href = href;
+        }, 500); // Время должно совпадать с CSS transition
+      });
+    });
+    window.addEventListener('DOMContentLoaded', () => {
+      const overlay = document.getElementById('fade-overlay');
+      overlay.classList.remove('active');
+    });
+  </script>
+  
+</body>
+</html>

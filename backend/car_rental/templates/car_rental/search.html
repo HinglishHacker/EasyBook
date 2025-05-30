@@ -1,0 +1,289 @@
+{% load static %}
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Аренда авто</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      min-height: 100vh;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.1);
+      width: 100%;
+      max-width: 500px;
+      z-index: 1;
+      position: relative;
+    }
+
+    .glass-card {
+      background: rgba(0, 0, 0, 0.5); /* затемнённое стекло */
+      color: white;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.85);
+      color: #000;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background-color: #1e60f5;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 15px rgba(30, 96, 245, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(30, 96, 245, 0.6);
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background-color: rgba(0, 0, 0, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 60px;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: 700;
+      color: #ffffff;
+      transition: text-shadow 0.3s ease;
+    }
+
+    .shine-text {
+      display: inline-block;
+      font-weight: 700;
+      font-size: 26px;
+      background: linear-gradient(90deg, #fff 20%, #1e60f5 50%, #fff 80%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: background-position 0.2s ease;
+    }
+
+    .nav-links a {
+      margin-left: 30px;
+      padding: 10px 18px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-links a:hover {
+      background-color: #1e60f5;
+      box-shadow: 0 4px 20px rgba(30, 96, 245, 0.5);
+      transform: scale(1.05);
+    }
+
+    .background-slideshow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    
+    .background-slideshow .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1.2s ease-in-out;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+    
+    .background-slideshow .slide.active {
+      opacity: 1;
+    }
+
+    .overlay {
+      background: rgba(0, 0, 0, 0.5);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+    }
+    .fade-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #000;
+      opacity: 0;
+      z-index: 9999;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+  
+    .fade-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+
+  <div class="navbar">
+    <div class="logo" id="logo">
+      <span class="shine-text">BOOK YOUR TRIP</span>
+    </div>
+    <div class="nav-links">
+      <a href="{% url 'main:about' %}">About us</a>
+      <a href="{% url 'home' %}">Flight</a>
+      <a href="{% url 'hotels:hotel_search' %}">Hotels</a>
+      <a href="{% url 'car_rental:search' %}">Car rental</a>
+      <a href="{% url 'booking:booking_history' %}">My tickets</a>
+      {% if not request.user.is_authenticated %}
+      <a href="{% url 'user:login' %}">Sign in</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="background-slideshow">
+    <img src="{% static 'slides/car/c1.png' %}" class="slide active">
+    <img src="{% static 'slides/car/c2.png' %}" class="slide">
+    <img src="{% static 'slides/car/c3.jpg' %}" class="slide">
+  </div>
+
+  <div class="glass-card">
+    <h2>Поиск аренды авто</h2>
+    <form method="get" action="{% url 'car_rental:search' %}">
+      <label for="pickup_location">Место получения</label>
+      <input type="text" name="pickup_location" id="pickup_location" placeholder="Город или аэропорт" required>
+
+      <label for="dropoff_location">Место возврата</label>
+      <input type="text" name="dropoff_location" id="dropoff_location" placeholder="Город или аэропорт" required>
+
+      <label for="pickup_date">Дата получения</label>
+      <input type="date" name="pickup_date" id="pickup_date" required>
+
+      <label for="dropoff_date">Дата возврата</label>
+      <input type="date" name="dropoff_date" id="dropoff_date" required>
+
+      <label for="car_type">Тип автомобиля</label>
+      <select name="car_type" id="car_type" required>
+        <option value="economy">Эконом</option>
+        <option value="premium">Премиум</option>
+        <option value="suv">SUV</option>
+        <option value="pickup">Пикап</option>
+        <option value="minivan">Минивэн</option>
+        <option value="luxury">Люкс</option>
+      </select>
+
+      <button type="submit" class="btn-primary">Найти авто</button>
+    </form>
+  </div>
+  <div class="fade-overlay" id="fade-overlay"></div>
+
+  <script>
+    const slides = document.querySelectorAll('.background-slideshow .slide');
+    if (slides.length > 0) {
+      let current = 0;
+      setInterval(() => {
+        if (!slides[current]) return;
+        slides[current].classList.remove('active');
+        current = (current + 1) % slides.length;
+        if (slides[current]) {
+          slides[current].classList.add('active');
+        }
+      }, 5000);
+    }
+
+    const shine = document.querySelector('.shine-text');
+    if (shine) {
+      gsap.from("#logo", {
+        x: -200,
+        opacity: 0,
+        duration: 1.2,
+        ease: "power3.out",
+        onComplete: () => {
+          gsap.to(shine, {
+            backgroundPosition: "200% center",
+            duration: 1.2,
+            ease: "power2.inOut",
+            onComplete: () => {
+              document.addEventListener("mousemove", (e) => {
+                const { clientX } = e;
+                const percent = clientX / window.innerWidth;
+                shine.style.backgroundPosition = `${percent * 200}% center`;
+              });
+            }
+          });
+        }
+      });
+    }
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', function (e) {
+        e.preventDefault(); // Предотвращаем немедленный переход
+        const href = this.href;
+  
+        const overlay = document.getElementById('fade-overlay');
+        overlay.classList.add('active');
+  
+        setTimeout(() => {
+          window.location.href = href;
+        }, 500); // Время должно совпадать с CSS transition
+      });
+    });
+      window.addEventListener('DOMContentLoaded', () => {
+        const overlay = document.getElementById('fade-overlay');
+        overlay.classList.remove('active');
+      });
+  </script>
+</body>
+</html>

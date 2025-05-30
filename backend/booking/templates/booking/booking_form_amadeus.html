@@ -1,0 +1,132 @@
+{% extends "home.html" %}
+{% block content %}
+<style>
+    .btn-success {
+  width: 100%;
+  padding: 14px 24px;
+  font-size: 18px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1e60f5, #3a80ff);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(30, 96, 245, 0.4);
+}
+
+.btn-success::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 300%;
+  height: 300%;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transition: transform 0.5s ease;
+  z-index: 0;
+}
+
+.btn-success:hover::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.btn-success:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(30, 96, 245, 0.5);
+}
+
+.btn-success:active {
+  transform: scale(0.98);
+  box-shadow: 0 4px 12px rgba(30, 96, 245, 0.3);
+}
+
+  .amadeus-form-wrapper {
+    max-width: 800px;
+    margin: 50px auto;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px;
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+    color: #fff;
+  }
+
+  .amadeus-form-wrapper h2 {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .amadeus-form-wrapper p {
+    margin-bottom: 10px;
+  }
+
+  .amadeus-form-wrapper .form-control {
+    margin-bottom: 20px;
+  }
+
+  .amadeus-form-wrapper .btn-success {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    border-radius: 10px;
+  }
+
+  .alert ul {
+    margin-bottom: 0;
+  }
+</style>
+
+<div class="amadeus-form-wrapper">
+    <h2>Бронирование через Amadeus</h2>
+
+    {% if errors %}
+      <div class="alert alert-danger">
+        <ul>
+          {% for error in errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'booking:amadeus_book' %}">
+        <p><strong>Откуда:</strong> {{ departure }}</p>
+        <p><strong>Куда:</strong> {{ arrival }}</p>
+        <p><strong>Цена за билет:</strong> {{ price }} USD</p>
+        <p><strong>Количество пассажиров:</strong> {{ form_data.num_seats|default:"1" }}</p>
+
+        {% if total_price %}
+        <p><strong>Итоговая сумма:</strong> {{ total_price }} USD</p>
+        {% endif %}
+
+        <select name="gender" class="form-control" required>
+  <option value="" disabled selected>Пол</option>
+  <option value="M">Мужской</option>
+  <option value="F">Женский</option>
+</select>
+
+        <input type="text" name="first_name" class="form-control" placeholder="Имя" required value="{{ form_data.first_name|default_if_none:'' }}">
+        <input type="text" name="last_name" class="form-control" placeholder="Фамилия" required value="{{ form_data.last_name|default_if_none:'' }}">
+        <input type="email" name="email" class="form-control" placeholder="Email" required value="{{ form_data.email|default_if_none:'' }}">
+        <input type="text" name="phone" class="form-control" placeholder="Телефон" required value="{{ form_data.phone|default_if_none:'' }}">
+
+        <input type="text" name="birth_date" class="form-control" placeholder="Дата рождения (ДД.ММ.ГГГГ)" required pattern="\d{2}\.\d{2}\.\d{4}" value="{{ form_data.birth_date|default_if_none:'' }}">
+
+
+        <input type="text" name="citizenship" class="form-control" placeholder="Гражданство" required value="{{ form_data.citizenship|default_if_none:'' }}">
+        <input type="text" name="passport_number" class="form-control" placeholder="Номер паспорта" required value="{{ form_data.passport_number|default_if_none:'' }}">
+        <input type="text" name="passport_expiry" class="form-control" placeholder="Срок действия паспорта (ДД.ММ.ГГГГ)" required pattern="\d{2}\.\d{2}\.\d{4}" value="{{ form_data.passport_expiry|default_if_none:'' }}">
+        <input type="text" name="passport_country" class="form-control" placeholder="Страна выдачи паспорта" required value="{{ form_data.passport_country|default_if_none:'' }}">
+
+        <input type="hidden" name="departure" value="{{ departure }}">
+        <input type="hidden" name="arrival" value="{{ arrival }}">
+        <input type="hidden" name="price" value="{{ price }}">
+
+       <button type="submit" class="btn btn-success mt-3">Подтвердить</button>
+    </form>
+</div>
+{% endblock %}

@@ -18,13 +18,17 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path,include
+from main.views import home_view
 
 urlpatterns = [
+    path('', home_view, name='home'),
+    path('booking/', include('booking.urls', namespace='booking')),
     path('admin/', admin.site.urls),
-    path('', include('main.urls')),
+    path('rental/', include('car_rental.urls', namespace='car_rental')),
+    path('', include('main.urls', namespace='main')),
     path('user/', include('user.urls', namespace='user')),
     path('hotels/' ,include('hotels.urls')),
-    path('favourite/' ,include('favourite.urls'))
+    path('favourite/' ,include('favourite.urls')),
 ]
 
 if settings.DEBUG:
