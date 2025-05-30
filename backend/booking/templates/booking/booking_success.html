@@ -1,0 +1,7 @@
+{% extends "home.html" %}
+{% block content %}
+<h2>Бронирование подтверждено</h2>
+<p>Спасибо! Ваше бронирование рейса <strong>{{ booking.flight.flight_number }}</strong> успешно оформлено.</p>
+<a href="{% url 'search_flights' %}">Вернуться к поиску</a>
+<a href="{% url 'booking_history' %}" class="btn btn-link mt-3">Мои бронирования</a>
+{% endblock %}

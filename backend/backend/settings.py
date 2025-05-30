@@ -41,7 +41,11 @@ INSTALLED_APPS = [
     
     'rest_framework',    
     'user',
-    'booking'
+    'booking',
+    'hotels',
+    'favourite',
+    'car_rental',
+    'main',
 ]
 
 MIDDLEWARE = [
@@ -60,10 +64,19 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
             os.path.join(BASE_DIR, 'user/templates'),
-            os.path.join(BASE_DIR, 'user/templates/user'),  
-            os.path.join(BASE_DIR, 'booking/templates/booking'),
-            os.path.join(BASE_DIR, 'booking/templates')
+            os.path.join(BASE_DIR, 'car_rental/templates'),
+            os.path.join(BASE_DIR, 'car_rental/templates/car_rental'),
+            os.path.join(BASE_DIR, 'user/templates/'),  
+            os.path.join(BASE_DIR, 'booking/templates/'),
+            os.path.join(BASE_DIR, 'booking/templates'),
+            os.path.join(BASE_DIR, 'hotels/templates/'),
+            os.path.join(BASE_DIR, 'hotels/templates'),     
+            os.path.join(BASE_DIR, 'favourites/templates/x'),
+            os.path.join(BASE_DIR, 'favourites/templates'),               
+            os.path.join(BASE_DIR, 'main/templates/main'),      
+            os.path.join(BASE_DIR, 'main/templates'),      
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -85,13 +98,14 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("DB_NAME"),
-        'USER': os.getenv("DB_USER"),
-        'PASSWORD': os.getenv("DB_PASS"),
-        'HOST': os.getenv("DB_HOST"),
-        'PORT': os.getenv("DB_PORT"),      
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASS'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),      
     }
 }
+
 
 
 # Password validation
@@ -131,8 +145,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 STATIC_URL = '/static/'
-# Указываем путь к папке "static" в корне проекта
-STATICFILES_DIRS = [BASE_DIR / "static_files"]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
 # Для продакшна (например, на сервере или при сборке проекта)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -144,8 +158,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'user.Passenger'
 
-LOGIN_REDIRECT_URL = 'base'       # после логина
-LOGOUT_REDIRECT_URL = 'base'      # после выхода
+LOGIN_REDIRECT_URL = 'home'       # после логина
+LOGOUT_REDIRECT_URL = 'home'      # после выхода
 USERNAME_FIELD = 'email'
 
 REST_FRAMEWORK = {
@@ -159,3 +173,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
 }
+
+AUTH_USER_MODEL = 'user.Passenger'
+

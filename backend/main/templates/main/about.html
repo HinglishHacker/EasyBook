@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easybook - Презентация</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Manrope', sans-serif;
+            display: flex;
+            min-height: 100vh;
+            background-color: white;
+            color: var(--dark);
+            overflow: hidden;
+        }
+        
+        .left-panel {
+            width: 50%;
+            padding: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            z-index: 2;
+            position: relative;
+        }
+        
+        .right-panel {
+            width: 50%;
+            position: relative;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+        
+        .scrolling-tape {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 40px 0;
+            animation: scrollTape 60s linear infinite;
+        }
+        
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 60px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        
+        h1 {
+            font-size: 44px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            line-height: 1.2;
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            color: var(--gray);
+            margin-bottom: 40px;
+            max-width: 400px;
+        }
+        
+        .slide {
+            display: none;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .slide.active {
+            display: block;
+        }
+        
+        /* Стили для элементов ленты */
+        .tape-element {
+            width: 420px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transform: scale(0.95);
+            transition: all 0.5s ease;
+            opacity: 0.7;
+            display: flex;
+        }
+        
+        .tape-element.active {
+            transform: scale(1.05);
+            opacity: 1;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .tape-content {
+            padding: 25px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .tape-image {
+            width: 160px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .ticket {
+            border-left: 5px solid var(--primary);
+        }
+        
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .ticket-airline {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 18px;
+        }
+        
+        .ticket-price {
+            font-weight: 700;
+            font-size: 24px;
+        }
+        
+        .ticket-route {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .ticket-city {
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .ticket-time {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .ticket-plane {
+            font-size: 24px;
+            color: var(--primary);
+            margin: 0 15px;
+        }
+        
+        .hotel-card .tape-image {
+            background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');
+        }
+        
+        .hotel-info {
+            margin-top: 10px;
+        }
+        
+        .hotel-name {
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        
+        .hotel-rating {
+            color: #f59e0b;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .hotel-price {
+            font-size: 16px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .car-card {
+            border-top: 5px solid var(--primary);
+        }
+        
+        .car-card .tape-image {
+            background-image: url('https://images.unsplash.com/photo-1502877338535-766e1452684a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');
+        }
+        
+        .car-type {
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .car-features {
+            font-size: 14px;
+            color: var(--gray);
+            margin: 8px 0;
+        }
+        
+        .car-price {
+            font-size: 16px;
+            color: var(--gray);
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 100;
+        }
+        
+        button {
+            background: var(--primary);
+            border: none;
+            color: white;
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+        
+        button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+        }
+        
+        .feature-list {
+            margin-top: 40px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(37, 99, 235, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary);
+        }
+        
+        .feature-text {
+            flex: 1;
+        }
+        
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .feature-desc {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        @keyframes scrollTape {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-50%);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Анимации для контента */
+        .animate-in {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray);
+        }
+    </style>
+</head>
+<body>
+    <!-- Слайд 1: Главный экран -->
+    <div class="left-panel">
+        <div class="slide active" id="slide1">
+            <div class="logo">Easybook</div>
+            <h1>Профессиональные решения для путешествий</h1>
+            <p class="subtitle">Интегрированная платформа для бронирования перелетов, отелей и транспорта</p>
+            
+            <div class="feature-list">
+                <div class="feature-item animate-in" style="animation-delay: 0.2s">
+                    <div class="feature-icon">✈️</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Авиабилеты</div>
+                        <div class="feature-desc">Лучшие цены от 800+ авиакомпаний</div>
+                    </div>
+                </div>
+                
+                <div class="feature-item animate-in" style="animation-delay: 0.4s">
+                    <div class="feature-icon">🏨</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Отели</div>
+                        <div class="feature-desc">500,000+ отелей по всему миру</div>
+                    </div>
+                </div>
+                
+                <div class="feature-item animate-in" style="animation-delay: 0.6s">
+                    <div class="feature-icon">🚗</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Аренда авто</div>
+                        <div class="feature-desc">Премиум автомобили в 150 странах</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stats animate-in" style="animation-delay: 0.8s">
+                <div class="stat-item">
+                    <div class="stat-number">10M+</div>
+                    <div class="stat-label">Пользователей</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">150+</div>
+                    <div class="stat-label">Стран</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Поддержка</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 2: Авиабилеты -->
+        <div class="slide" id="slide2">
+            <div class="logo">Easybook</div>
+            <h1 class="animate-in">Бронирование перелетов</h1>
+            <p class="subtitle animate-in" style="animation-delay: 0.2s">Найдите лучшие рейсы по оптимальным ценам</p>
+            
+            <div class="feature-list">
+                <div class="feature-item animate-in" style="animation-delay: 0.4s">
+                    <div class="feature-icon">🔍</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Умный поиск</div>
+                        <div class="feature-desc">Находим оптимальные маршруты с учетом ваших предпочтений</div>
+                    </div>
+                </div>
+                
+                <div class="feature-item animate-in" style="animation-delay: 0.6s">
+                    <div class="feature-icon">💺</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Выбор мест</div>
+                        <div class="feature-desc">Забронируйте конкретное место в салоне</div>
+                    </div>
+                </div>
+                
+                <div class="feature-item animate-in" style="animation-delay: 0.8s">
+                    <div class="feature-icon">🔄</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Гибкие даты</div>
+                        <div class="feature-desc">Сравните цены на соседние даты</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 3: Отели -->
+        <div class="slide" id="slide3">
+            <div class="logo">Easybook</div>
+            <h1 class="animate-in">Бронирование отелей</h1>
+            <p class="subtitle animate-in" style="animation-delay: 0.2s">Найдите идеальное проживание для вашей поездки</p>
+            
+            <div class="feature-list">
+                <div class="feature-item animate-in" style="animation-delay: 0.4s">
+                    <div class="feature-icon">📍</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Идеальное расположение</div>
+                        <div class="feature-desc">Отели рядом с ключевыми точками города</div>
+                    </div>
+                </div>
+                
+                <div class="feature-item animate-in" style="animation-delay: 0.6s">
+                    <div class="feature-icon">⭐</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Реальные отзывы</div>
+                        <div class="feature-desc">Честные оценки от гостей</div>
+                    </div>
+                </div>
+                
+                <div class="feature-item animate-in" style="animation-delay: 0.8s">
+                    <div class="feature-icon">🛎️</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Дополнительные услуги</div>
+                        <div class="feature-desc">Трансфер, экскурсии и многое другое</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 4: Аренда авто -->
+        <div class="slide" id="slide4">
+            <div class="logo">Easybook</div>
+            <h1 class="animate-in">Аренда автомобилей</h1>
+            <p class="subtitle animate-in" style="animation-delay: 0.2s">Премиум автомобили по всему миру</p>
+            
+            <div class="feature-list">
+                <div class="feature-item animate-in" style="animation-delay: 0.4s">
+                    <div class="feature-icon">🚘</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Широкий выбор</div>
+                        <div class="feature-desc">От эконом до премиум класса</div>
+                    </div>
+                </div>
+                
+                <div class="feature-item animate-in" style="animation-delay: 0.6s">
+                    <div class="feature-icon">📱</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Мобильное приложение</div>
+                        <div class="feature-desc">Управляйте бронированием в пути</div>
+                    </div>
+                </div>
+                
+                <div class="feature-item animate-in" style="animation-delay: 0.8s">
+                    <div class="feature-icon">🛡️</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Полная страховка</div>
+                        <div class="feature-desc">Без скрытых платежей</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Слайд 5: Завершение -->
+        <div class="slide" id="slide5">
+            <div class="logo">Easybook</div>
+            <h1 class="animate-in">Начните свое путешествие</h1>
+            <p class="subtitle animate-in" style="animation-delay: 0.2s">Просто. Удобно. Надежно.</p>
+            
+            <div class="stats animate-in" style="animation-delay: 0.4s">
+                <div class="stat-item">
+                    <div class="stat-number">1</div>
+                    <div class="stat-label">Выберите направление</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Забронируйте билеты и отель</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Наслаждайтесь поездкой</div>
+                </div>
+            </div>
+            
+            <button onclick="window.location.href='{% url 'home' %}'" class="animate-in" style="animation-delay: 0.6s; margin-top: 50px; width: 200px;">
+                Демо-доступ
+              </button>
+              
+        </div>
+    </div>
+    
+    <!-- Правая панель с бесконечной лентой -->
+    <div class="right-panel">
+        <div class="scrolling-tape">
+            <!-- Билеты -->
+            <div class="tape-element ticket active">
+                <div class="tape-content">
+                    <div class="ticket-header">
+                        <span class="ticket-airline">BUSINESS AIR</span>
+                        <span class="ticket-price">$789</span>
+                    </div>
+                    <div class="ticket-route">
+                        <div>
+                            <div class="ticket-city">Москва</div>
+                            <div class="ticket-time">SVO, 08:00</div>
+                        </div>
+                        <div class="ticket-plane">→</div>
+                        <div>
+                            <div class="ticket-city">Дубай</div>
+                            <div class="ticket-time">DXB, 12:30</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tape-image" style="background-image: url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');"></div>
+            </div>
+            
+            <div class="tape-element ticket">
+                <div class="tape-content">
+                    <div class="ticket-header">
+                        <span class="ticket-airline">EASY AIR</span>
+                        <span class="ticket-price">$349</span>
+                    </div>
+                    <div class="ticket-route">
+                        <div>
+                            <div class="ticket-city">Париж</div>
+                            <div class="ticket-time">CDG, 14:20</div>
+                        </div>
+                        <div class="ticket-plane">→</div>
+                        <div>
+                            <div class="ticket-city">Рим</div>
+                            <div class="ticket-time">FCO, 16:10</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tape-image" style="background-image: url('https://images.unsplash.com/photo-1556388158-158ea5ccacbd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');"></div>
+            </div>
+            
+            <!-- Отели -->
+            <div class="tape-element hotel-card">
+                <div class="tape-content">
+                    <div class="hotel-name">Grand Hotel Europe</div>
+                    <div class="hotel-rating">★★★★★</div>
+                    <div class="hotel-info">
+                        <div style="margin-bottom: 8px; font-size: 14px; color: var(--gray);">Барселона, Испания</div>
+                        <div class="hotel-price">от $220/ночь</div>
+                    </div>
+                </div>
+                <div class="tape-image"></div>
+            </div>
+            
+            <div class="tape-element hotel-card">
+                <div class="tape-content">
+                    <div class="hotel-name">Resort & Spa</div>
+                    <div class="hotel-rating">★★★★☆</div>
+                    <div class="hotel-info">
+                        <div style="margin-bottom: 8px; font-size: 14px; color: var(--gray);">Бали, Индонезия</div>
+                        <div class="hotel-price">от $180/ночь</div>
+                    </div>
+                </div>
+                <div class="tape-image" style="background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');"></div>
+            </div>
+            
+            <!-- Автомобили -->
+            <div class="tape-element car-card">
+                <div class="tape-content">
+                    <div class="car-type">Бизнес класс</div>
+                    <div class="car-features">Mercedes E-Class</div>
+                    <div class="car-features">Автомат • Климат-контроль</div>
+                    <div class="car-price">от $90/день</div>
+                </div>
+                <div class="tape-image"></div>
+            </div>
+            
+            <div class="tape-element car-card">
+                <div class="tape-content">
+                    <div class="car-type">Люкс класс</div>
+                    <div class="car-features">Porsche 911</div>
+                    <div class="car-features">Спорт • Премиум звук</div>
+                    <div class="car-price">от $150/день</div>
+                </div>
+                <div class="tape-image" style="background-image: url('https://images.unsplash.com/photo-1502877338535-766e1452684a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');"></div>
+            </div>
+            
+            <!-- Дополнительные элементы -->
+            <div class="tape-element ticket">
+                <div class="tape-content">
+                    <div class="ticket-header">
+                        <span class="ticket-airline">GLOBAL AIR</span>
+                        <span class="ticket-price">$1,199</span>
+                    </div>
+                    <div class="ticket-route">
+                        <div>
+                            <div class="ticket-city">Нью-Йорк</div>
+                            <div class="ticket-time">JFK, 09:45</div>
+                        </div>
+                        <div class="ticket-plane">→</div>
+                        <div>
+                            <div class="ticket-city">Токио</div>
+                            <div class="ticket-time">HND, 14:30 (+1)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tape-image" style="background-image: url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');"></div>
+            </div>
+            
+            <div class="tape-element hotel-card">
+                <div class="tape-content">
+                    <div class="hotel-name">Executive Suites</div>
+                    <div class="hotel-rating">★★★★★</div>
+                    <div class="hotel-info">
+                        <div style="margin-bottom: 8px; font-size: 14px; color: var(--gray);">Токио, Япония</div>
+                        <div class="hotel-price">от $300/ночь</div>
+                    </div>
+                </div>
+                <div class="tape-image" style="background-image: url('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button onclick="prevSlide()">Назад</button>
+        <button onclick="nextSlide()">Вперед</button>
+    </div>
+    
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 5;
+        
+        function showSlide(n) {
+            document.querySelector('.slide.active').classList.remove('active');
+            document.getElementById(`slide${n}`).classList.add('active');
+            currentSlide = n;
+            
+            // Анимация элементов при переключении слайдов
+            const elements = document.querySelectorAll(`#slide${n} [class*="animate-in"]`);
+            elements.forEach((el, index) => {
+                el.style.animationDelay = `${index * 0.2}s`;
+                el.style.opacity = 0;
+                el.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    el.style.animation = 'fadeInUp 0.8s ease-out forwards';
+                }, 50);
+            });
+        }
+        
+        function nextSlide() {
+            const next = currentSlide < totalSlides ? currentSlide + 1 : 1;
+            showSlide(next);
+        }
+        
+        function prevSlide() {
+            const prev = currentSlide > 1 ? currentSlide - 1 : totalSlides;
+            showSlide(prev);
+        }
+        
+        // Поддержка клавиатуры
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+        
+        // Анимация элементов ленты
+        const tapeElements = document.querySelectorAll('.tape-element');
+        
+        function animateTapeElements() {
+            tapeElements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                const isVisible = rect.top < window.innerHeight && rect.bottom >= 0;
+                
+                if (isVisible) {
+                    el.classList.add('active');
+                } else {
+                    el.classList.remove('active');
+                }
+            });
+            
+            requestAnimationFrame(animateTapeElements);
+        }
+        
+        animateTapeElements();
+    </script>
+</body>
+</html>

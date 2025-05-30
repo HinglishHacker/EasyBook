@@ -3,6 +3,8 @@ from rest_framework.routers import DefaultRouter
 from . import views
 from .views import login_view, register_view, logout_then_login
 
+app_name = 'user'
+
 urlpatterns = [
     path('register/', register_view, name='register'),
     path('logout/', logout_then_login, name='logout'),

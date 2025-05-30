@@ -1,6 +1,6 @@
-{% extends 'base.html' %}
+{% comment %} {% extends 'home.html' %}
 {% block title %}Вы вышли{% endblock %}
-{% block content %}
+{% block content %} {% endcomment %}
 <h2>Вы вышли из аккаунта</h2>
-<p><a href="{% url 'login' %}">Войти снова</a></p>
-{% endblock %}
+<p><a href="{% url 'user:login' %}">Войти снова</a></p>
+{% comment %} {% endblock %} {% endcomment %}

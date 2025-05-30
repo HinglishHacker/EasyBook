@@ -1,0 +1,50 @@
+{% extends "home.html" %}
+{% block title %}Поиск рейсов через Amadeus{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Поиск авиабилетов (Amadeus API)</h2>
+
+    <form method="post" class="row g-3 mb-4">
+        {% csrf_token %}
+        <div class="col-md-4">
+            <input type="text" name="origin" class="form-control" placeholder="Откуда (IATA, например TSE)" required>
+        </div>
+        <div class="col-md-4">
+            <input type="text" name="destination" class="form-control" placeholder="Куда (например IST)" required>
+        </div>
+        <div class="col-md-3">
+            <input type="date" name="departure_date" class="form-control" required>
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary w-100">Искать</button>
+        </div>
+    </form>
+
+    {% if flights %}
+        <h5>Найдено рейсов: {{ flights|length }}</h5>
+        <div class="row row-cols-1 g-3">
+            {% for flight in flights %}
+            <div class="col">
+                <div class="card p-3 shadow-sm">
+                    <p>
+                        <strong>{{ flight.itineraries.0.segments.0.departure.iataCode }}</strong> →
+                        <strong>{{ flight.itineraries.0.segments.0.arrival.iataCode }}</strong>
+                    </p>
+                    <p>
+                        Вылет: {{ flight.itineraries.0.segments.0.departure.at|slice:":16" }} <br>
+                        Прибытие: {{ flight.itineraries.0.segments.0.arrival.at|slice:":16" }}
+                    </p>
+                    <p>
+                        Цена: <strong>{{ flight.price.total }}</strong> {{ flight.price.currency }}<br>
+                        Авиакомпания: {{ flight.validatingAirlineCodes.0 }}
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% elif request.method == "POST" %}
+        <div class="alert alert-warning">Рейсы не найдены или произошла ошибка.</div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,23 +1,92 @@
-{% extends 'base.html' %}
-{% block title %}Вход в аккаунт{% endblock %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Вход</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      min-height: 100vh;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-{% block content %}
-<div style="max-width: 400px; margin: auto; padding: 30px;">
-    <h2 style="text-align: center;">Вход в аккаунт</h2>
-    <form method="post" style="display: flex; flex-direction: column; gap: 15px;">
-        {% csrf_token %}
-        <label for="id_username">Email:</label>
-        <input type="email" name="username" id="id_username" required>
+    .glass-card {
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
 
-        <label for="id_password">Пароль:</label>
-        <input type="password" name="password" id="id_password" required>
+    .glass-card h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-        <button type="submit" style="padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px;">
-            Войти
-        </button>
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.85);
+      color: #000;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background-color: #1e60f5;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 15px rgba(30, 96, 245, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(30, 96, 245, 0.6);
+    }
+
+    .glass-card p {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .glass-card a {
+      color: #1e90ff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="glass-card">
+    <h2>Вход в аккаунт</h2>
+    <form method="post">
+      {% csrf_token %}
+      <label for="email">Email</label>
+      <input type="email" name="email" id="email" placeholder="Введите email" required>
+
+      <label for="password">Пароль</label>
+      <input type="password" name="password" id="password" placeholder="Введите пароль" required>
+
+      <button type="submit" class="btn-primary">Войти</button>
     </form>
-    <p style="text-align: center; margin-top: 10px;">
-        Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a>
-    </p>
-</div>
-{% endblock %}
+    <p>Нет аккаунта? <a href="{% url 'user:register' %}">Зарегистрироваться</a></p>
+  </div>
+</body>
+</html>

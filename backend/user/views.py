@@ -15,20 +15,18 @@ from urllib.parse import urlsplit, urlunsplit
 from .models import Passenger
 from .forms import RegisterForm, LoginForm
 
-# === Views ===
 
 def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, 'Вы успешно зарегистрированы!')
-            s.success(request, "Вы успешно зарегистрированы!")
-            return redirect('base')
+            form.save()
+            messages.success(request, "Вы успешно зарегистрированы!")
+            return redirect('user:login')
     else:
         form = RegisterForm()
     return render(request, 'user/register.html', {'form': form})
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -39,17 +37,16 @@ def login_view(request):
             user = authenticate(request, email=email, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('base')
+                return redirect('home')  # <== Убедись, что здесь именно 'home'
             else:
-                messages.success(request, 'Вы успешно зарегистрированы!')
-            s.error(request, 'Неверный email или пароль.')
+                messages.error(request, 'Неверный email или пароль.')
     else:
         form = LoginForm()
     return render(request, 'user/login.html', {'form': form})
 
 def home_view(request):
     print(">> Пользователь:", request.user.email if request.user.is_authenticated else "Аноним")
-    return render(request, 'base.html')
+    return render(request, 'home.html')
 
 # === Logout system ===
 

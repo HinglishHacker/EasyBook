@@ -1,0 +1,46 @@
+{% extends "home.html" %}
+{% block content %}
+<style>
+  .booking-success-wrapper {
+    max-width: 600px;
+    margin: 100px auto;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px;
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    color: #fff;
+    text-align: center;
+  }
+
+  .booking-success-wrapper h2 {
+    color: #4caf50;
+    margin-bottom: 24px;
+  }
+
+  .booking-success-wrapper p {
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+
+  .booking-success-wrapper .btn {
+    margin-top: 20px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 16px;
+  }
+</style>
+
+<div class="booking-success-wrapper">
+    <h2>✅ Бронирование прошло успешно!</h2>
+
+    <p><strong>Имя:</strong> {{ name }}</p>
+    <p><strong>Email:</strong> {{ email }}</p>
+    <p><strong>Маршрут:</strong> {{ departure }} → {{ arrival }}</p>
+    <p><strong>Цена за билет:</strong> {{ price }} USD</p>
+
+    <form action="{% url 'booking:booking_history' %}" method="get">
+        <button type="submit" class="btn btn-outline-primary">Перейти в историю бронирований</button>
+    </form>
+</div>
+{% endblock %}

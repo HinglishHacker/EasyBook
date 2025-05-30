@@ -1,0 +1,412 @@
+{% load static %}
+{% load form_tags %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flight Booking</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      min-height: 100vh;
+      color: #fff;
+      position: relative;
+      padding-bottom: 40px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .form-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 30px;
+      margin: 0 auto;
+      width: 85%;
+      max-width: 960px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: flex-end;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+    }
+    label { margin-bottom: 5px; font-weight: 600; color: #fff; }
+    input, select {
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(5px);
+      box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.05);
+    }
+    .card {
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.2s;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .card-body {
+      padding: 20px;
+    }
+    .card-body p { 
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: #fff;
+    }
+    h2, h4 {
+      color: #fff;
+      font-weight: 600;
+    }
+    h2 {
+      margin-bottom: 30px;
+    }
+    h4 {
+      margin-top: 30px;
+    }
+    hr {
+      border-color: rgba(255,255,255,0.1);
+    }
+    
+    /* Blue Button Styles */
+    .btn-primary, .btn-outline-primary {
+      border-radius: 8px;
+      font-weight: 500;
+      padding: 10px;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+    .btn-primary {
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: #0b5ed7;
+      border-color: #0a58ca;
+    }
+    .btn-outline-primary {
+      color: #0d6efd;
+      border-color: #0d6efd;
+      background-color: transparent;
+    }
+    .btn-outline-primary:hover {
+      background-color: #0d6efd;
+      color: white;
+    }
+    button.btn {
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background-color: rgba(0, 0, 0, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 60px;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: 700;
+      color: #ffffff;
+      transition: text-shadow 0.3s ease;
+    }
+
+    .shine-text {
+      display: inline-block;
+      font-weight: 700;
+      font-size: 26px;
+      background: linear-gradient(90deg, #fff 20%, #1e60f5 50%, #fff 80%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: background-position 0.2s ease;
+    }
+
+    .nav-links a {
+      margin-left: 30px;
+      padding: 10px 18px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-links a:hover {
+      background-color: #1e60f5;
+      box-shadow: 0 4px 20px rgba(30, 96, 245, 0.5);
+      transform: scale(1.05);
+    }
+
+    .background-slideshow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    
+    .background-slideshow .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1.2s ease-in-out;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+    
+    .background-slideshow .slide.active {
+      opacity: 1;
+    }
+
+    .overlay {
+      background: rgba(0, 0, 0, 0.5);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="logo" id="logo">
+      <span class="shine-text">BOOK YOUR TRIP</span>
+    </div>  
+  <div class="container">
+    <h2 class="text-center my-4">Поиск авиабилетов</h2>
+  </div>
+</div>  
+  <div class="background-slideshow">
+      <img src="{% static 'slides/fly/f2.jpg' %}" class="slide active">
+      <img src="{% static 'slides/fly/f3.png' %}" class="slide">
+      <img src="{% static 'slides/fly/f4.png' %}" class="slide">
+  </div>
+  <div class="container">
+    <!-- Рейсы из локальной базы -->
+    {% if flights %}
+        <h4 class="mb-3">Рейсы из локальной базы:</h4>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for flight in flights %}
+            <div class="col">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Рейс: {{ flight.flight_number }}</h5>
+                        <p><strong>Откуда:</strong> {{ flight.departure_city }}</p>
+                        <p><strong>Куда:</strong> {{ flight.arrival_city }}</p>
+                        <p><strong>Дата вылета:</strong> {{ flight.departure_time|date:"d.m.Y H:i" }}</p>
+                        <p><strong>Цена:</strong> {{ flight.price }} USD</p>
+                        <a href="{% url 'book_flight' flight.id %}" class="btn btn-primary">Забронировать</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Amadeus -->
+    {% if amadeus_flights %}
+        <hr class="my-5">
+        <h4 class="mb-3">Рейсы от Amadeus API:</h4>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for flight in amadeus_flights %}
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <p><strong>Откуда:</strong> {{ flight.departure }}</p>
+                        <p><strong>Куда:</strong> {{ flight.arrival }}</p>
+                        <p><strong>Класс:</strong> {{ flight.class }}</p>
+                        <p><strong>Цена:</strong> {{ flight.price }} USD</p>
+                        <form action="{% url 'booking:booking_form_amadeus' %}" method="get">
+                            <input type="hidden" name="departure" value="{{ flight.departure }}">
+                            <input type="hidden" name="arrival" value="{{ flight.arrival }}">
+                            <input type="hidden" name="flight_class" value="{{ flight.class }}">
+                            <input type="hidden" name="price" value="{{ flight.price }}">
+                            <button type="submit" class="btn btn-outline-primary">Забронировать</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+  </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const inputDeparture = document.querySelector("#id_departure_city");
+    const inputArrival = document.querySelector("#id_arrival_city");
+    const departureList = document.getElementById("departure-list");
+    const arrivalList = document.getElementById("arrival-list");
+
+    if (document.getElementById("open-departure-list")) {
+        document.getElementById("open-departure-list").addEventListener("click", () => {
+            departureList.style.display = (departureList.style.display === "none") ? "block" : "none";
+            arrivalList.style.display = "none";
+        });
+    }
+
+    if (document.getElementById("open-arrival-list")) {
+        document.getElementById("open-arrival-list").addEventListener("click", () => {
+            arrivalList.style.display = (arrivalList.style.display === "none") ? "block" : "none";
+            departureList.style.display = "none";
+        });
+    }
+
+    document.querySelectorAll(".city-option").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const code = btn.dataset.code;
+            const type = btn.dataset.type;
+            if (type === "from") {
+                inputDeparture.value = code;
+                departureList.style.display = "none";
+            } else {
+                inputArrival.value = code;
+                arrivalList.style.display = "none";
+            }
+        });
+    });
+
+    document.addEventListener("click", function (e) {
+        if (!e.target.closest(".position-relative")) {
+            if (departureList) departureList.style.display = "none";
+            if (arrivalList) arrivalList.style.display = "none";
+        }
+    });
+});
+const shine = document.querySelector(".shine-text");
+
+// Эффект при загрузке
+gsap.from("#logo", {
+  x: -200,
+  opacity: 0,
+  duration: 1.2,
+  ease: "power3.out",
+  onComplete: () => {
+    gsap.to(shine, {
+      backgroundPosition: "200% center",
+      duration: 1.2,
+      ease: "power2.inOut",
+      onComplete: () => {
+        // Подключаем эффект движения мыши внутри текста
+        shine.addEventListener("mousemove", (e) => {
+          const rect = shine.getBoundingClientRect();
+          const offsetX = e.clientX - rect.left;
+          const percent = offsetX / rect.width;
+          shine.style.backgroundPosition = `${percent * 200}% center`;
+        });
+      }
+    });
+  }
+});
+const slides = document.querySelectorAll('.background-slideshow .slide');
+let current = 0;
+
+setInterval(() => {
+  slides[current].classList.remove('active');
+  current = (current + 1) % slides.length;
+  slides[current].classList.add('active');
+}, 5000);
+
+const slides = document.querySelectorAll('.background-slideshow .slide');
+if (slides.length > 0) {
+  let current = 0;
+  setInterval(() => {
+    if (!slides[current]) return;
+    slides[current].classList.remove('active');
+    current = (current + 1) % slides.length;
+    if (slides[current]) {
+      slides[current].classList.add('active');
+    }
+  }, 5000);
+}
+
+const shine = document.querySelector('.shine-text');
+if (shine) {
+  gsap.from("#logo", {
+    x: -200,
+    opacity: 0,
+    duration: 1.2,
+    ease: "power3.out",
+    onComplete: () => {
+      gsap.to(shine, {
+        backgroundPosition: "200% center",
+        duration: 1.2,
+        ease: "power2.inOut",
+        onComplete: () => {
+          document.addEventListener("mousemove", (e) => {
+            const { clientX } = e;
+            const percent = clientX / window.innerWidth;
+            shine.style.backgroundPosition = `${percent * 200}% center`;
+          });
+        }
+      });
+    }
+  });
+}
+
+// GSAP для .header
+gsap.from(".header h1", {
+  y: 50,
+  opacity: 0,
+  duration: 1.2,
+  ease: "power3.out",
+  delay: 0.5
+});
+
+gsap.from(".header p", {
+  y: 30,
+  opacity: 0,
+  duration: 1.2,
+  ease: "power3.out",
+  delay: 0.8
+});
+</script>
+</body>
+</html>
+{% endblock %}
