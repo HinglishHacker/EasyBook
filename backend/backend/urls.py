@@ -21,7 +21,10 @@ from django.urls import path,include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('user.urls')),
+    path('', include('main.urls')),
+    path('user/', include('user.urls', namespace='user')),
+    path('hotels/' ,include('hotels.urls')),
+    path('favourite/' ,include('favourite.urls'))
 ]
 
 if settings.DEBUG:
